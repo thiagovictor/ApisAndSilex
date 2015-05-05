@@ -10,22 +10,25 @@ use Code\Sistema\Entity\Produto;
 $app['produtoService'] = function () {
     return $produtoService = new ProdutoService(new ProdutoMapper(new SQLite3Connection(new SQLite3(__DIR__ . "/../database/sistema.db"))), new Produto());
 };
-//So para não retornar erro quando iniciar -> para teste
-$app->get('/', function (){
-  return "Rodando em /produtos";  
-});
+
+$app->get('/', function () use ($app) {
+    return $app['twig']->render('index.twig', []);
+})->bind('inicio');
+
 $app->get('/produtos', function () use ($app) {
-//    $inserir = [
-//        "nome" => "Monitor",
-//        "descricao" => "AOC LED 22 Pol.",
-//        "valor" => 579.50
-//    ];
-//    $app['produtoService']->insert($inserir);
-//    $app['produtoService']->update($atualizar);
-//    $app['produtoService']->delete(27);
-      $result = $app['produtoService']->findAll();
-    return $app->json($result);
-});
+    $result = $app['produtoService']->findAll();
+    return $app['twig']->render('produtos.twig', ['produtos' => $result]);
+})->bind('produtos_listar');
+
+$app->get('/produtos/novo', function () use ($app) {
+    return $app['twig']->render('produto_novo.twig', []);
+})->bind('produto_novo');
+
+$app->get('/produtos/delete/{id}', function ($id) use ($app) {
+    $app['produtoService']->delete($id);
+    return $app->redirect("/produtos");
+})->bind('produtos_delete');
+
 $app->run();
 
 
