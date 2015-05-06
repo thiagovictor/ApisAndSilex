@@ -12,5 +12,5 @@ interface InterfaceMapper {
     
     public function findAll();
     
-    public function find(array $parametros = array());
+    public function find($id);
 }

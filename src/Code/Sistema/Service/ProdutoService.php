@@ -43,9 +43,13 @@ class ProdutoService {
     public function delete($id) {
         return $this->mapper->delete($id);
     }
-    
+
     public function findAll() {
         return $this->mapper->findAll();
+    }
+
+    public function find($id) {
+        return $this->mapper->find($id);
     }
 
 }
