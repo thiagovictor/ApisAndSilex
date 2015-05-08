@@ -9,6 +9,7 @@ class ProdutoService {
 
     private $mapper;
     private $produto;
+    private $message;
 
     public function __construct(ProdutoMapper $mapper, Produto $produto) {
         $this->mapper = $mapper;
@@ -19,6 +20,10 @@ class ProdutoService {
         foreach ($data as $metodo => $valor) {
             $metodo = 'set' . ucfirst($metodo);
             if (!method_exists($this->produto, $metodo)) {
+                $this->setMessage([
+                    "success" => false,
+                    "message" => "Nao foi possivel converte-lo para um produto valido. Verifique os campos enviados: nome:descricao:valor"
+                ]);
                 return false;
             }
             $this->produto->$metodo($valor);
@@ -34,6 +39,20 @@ class ProdutoService {
     }
 
     public function update(array $data = array()) {
+        if (!isset($data["id"])) {
+            $this->setMessage([
+                "success" => false,
+                "message" => "Parametro :id nao encontrado"
+            ]);
+            return false;
+        }
+        if(!$this->find($data["id"])){
+             $this->setMessage([
+                "success" => false,
+                "message" => "Nao foi possivel localizar o registro"
+            ]);
+            return false;
+        }
         if ($this->popular($data)) {
             return $this->mapper->update($this->produto);
         }
@@ -41,7 +60,22 @@ class ProdutoService {
     }
 
     public function delete($id) {
-        return $this->mapper->delete($id);
+        if(!$this->find($id)){
+             $this->setMessage([
+                "success" => false,
+                "message" => "Nao foi possivel localizar o registro"
+            ]);
+            return false;
+        }
+        $result = $this->mapper->delete($id);
+        if (!$result) {
+            $this->setMessage([
+                "success" => false,
+                "message" => "Nao foi possivel excluir o registro"
+            ]);
+            return false;
+        }
+        return $result;
     }
 
     public function findAll() {
@@ -50,6 +84,15 @@ class ProdutoService {
 
     public function find($id) {
         return $this->mapper->find($id);
+    }
+
+    function getMessage() {
+        return $this->message;
+    }
+
+    function setMessage($message) {
+        $this->message = $message;
+        return $this;
     }
 
 }

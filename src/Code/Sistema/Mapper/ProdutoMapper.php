@@ -29,7 +29,7 @@ class ProdutoMapper implements InterfaceMapper {
         $stmt->bindValue(1, $id, SQLITE3_INTEGER);
         $result = $stmt->execute();
         if ($result) {
-            return $result->fetchArray();
+            return $result->fetchArray(SQLITE3_ASSOC);
         }
         return false;
     }

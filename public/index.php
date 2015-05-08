@@ -32,7 +32,7 @@ $app->post('/produtos/novo', function (Request $request) use ($app) {
 
 $app->get('/produtos/edit/{id}', function ($id) use ($app) {
     $result = $app['produtoService']->find($id);
-    return $app['twig']->render('produto/produto_edit.twig', ["produto"=>$result]);
+    return $app['twig']->render('produto/produto_edit.twig', ["produto" => $result]);
 })->bind('produto_edit');
 
 $app->post('/produtos/edit', function (Request $request) use ($app) {
@@ -44,6 +44,45 @@ $app->get('/produtos/delete/{id}', function ($id) use ($app) {
     $app['produtoService']->delete($id);
     return $app->redirect("/produtos");
 })->bind('produtos_delete');
+
+//APIS RESET
+
+$app->get('/api/produtos', function () use ($app) {
+    $result = $app['produtoService']->findAll();
+    return $app->json($result);
+});
+
+$app->get('/api/produtos/{id}', function ($id) use ($app) {
+    $result = $app['produtoService']->find($id);
+    return $app->json($result);
+});
+
+$app->post('/api/produtos', function (Request $request) use ($app) {
+    $serviceManager = $app['produtoService'];
+    $result = $serviceManager->insert($request->request->all());
+    if (!$result) {
+        return $app->json($serviceManager->getMessage());
+    }
+    return $app->json($result);
+});
+
+$app->put('/api/produtos', function (Request $request) use ($app) {
+    $serviceManager = $app['produtoService'];
+    $result = $serviceManager->update($request->request->all());
+    if (!$result) {
+        return $app->json($serviceManager->getMessage());
+    }
+    return $app->json($result);
+});
+
+$app->delete('/api/produtos/{id}', function ($id) use ($app) {
+    $serviceManager = $app['produtoService'];
+    $result = $serviceManager->delete($id);
+    if (!$result) {
+        return $app->json($serviceManager->getMessage());
+    }
+    return $app->json($result);
+});
 
 $app->run();
 
