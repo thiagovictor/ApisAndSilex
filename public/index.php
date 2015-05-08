@@ -60,28 +60,19 @@ $app->get('/api/produtos/{id}', function ($id) use ($app) {
 $app->post('/api/produtos', function (Request $request) use ($app) {
     $serviceManager = $app['produtoService'];
     $result = $serviceManager->insert($request->request->all());
-    if (!$result) {
-        return $app->json($serviceManager->getMessage());
-    }
-    return $app->json($result);
+    return $app->json(["success" =>$result,"Message"=>$serviceManager->getMessage()]);
 });
 
 $app->put('/api/produtos', function (Request $request) use ($app) {
     $serviceManager = $app['produtoService'];
     $result = $serviceManager->update($request->request->all());
-    if (!$result) {
-        return $app->json($serviceManager->getMessage());
-    }
-    return $app->json($result);
+    return $app->json(["success" =>$result,"Message"=>$serviceManager->getMessage()]);
 });
 
 $app->delete('/api/produtos/{id}', function ($id) use ($app) {
     $serviceManager = $app['produtoService'];
     $result = $serviceManager->delete($id);
-    if (!$result) {
-        return $app->json($serviceManager->getMessage());
-    }
-    return $app->json($result);
+    return $app->json(["success" =>$result,"Message"=>$serviceManager->getMessage()]);
 });
 
 $app->run();

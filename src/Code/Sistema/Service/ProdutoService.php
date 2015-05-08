@@ -20,10 +20,7 @@ class ProdutoService {
         foreach ($data as $metodo => $valor) {
             $metodo = 'set' . ucfirst($metodo);
             if (!method_exists($this->produto, $metodo)) {
-                $this->setMessage([
-                    "success" => false,
-                    "message" => "Nao foi possivel converte-lo para um produto valido. Verifique os campos enviados: nome:descricao:valor"
-                ]);
+                $this->setMessage("Nao foi possivel converte-lo para um produto valido. Verifique os campos enviados: nome:descricao:valor");
                 return false;
             }
             $this->produto->$metodo($valor);
@@ -40,17 +37,11 @@ class ProdutoService {
 
     public function update(array $data = array()) {
         if (!isset($data["id"])) {
-            $this->setMessage([
-                "success" => false,
-                "message" => "Parametro :id nao encontrado"
-            ]);
+            $this->setMessage("Parametro :id nao encontrado");
             return false;
         }
         if(!$this->find($data["id"])){
-             $this->setMessage([
-                "success" => false,
-                "message" => "Nao foi possivel localizar o registro"
-            ]);
+             $this->setMessage("Nao foi possivel localizar o registro");
             return false;
         }
         if ($this->popular($data)) {
@@ -61,18 +52,12 @@ class ProdutoService {
 
     public function delete($id) {
         if(!$this->find($id)){
-             $this->setMessage([
-                "success" => false,
-                "message" => "Nao foi possivel localizar o registro"
-            ]);
+             $this->setMessage("Nao foi possivel localizar o registro");
             return false;
         }
         $result = $this->mapper->delete($id);
         if (!$result) {
-            $this->setMessage([
-                "success" => false,
-                "message" => "Nao foi possivel excluir o registro"
-            ]);
+            $this->setMessage("Nao foi possivel excluir o registro");
             return false;
         }
         return $result;
